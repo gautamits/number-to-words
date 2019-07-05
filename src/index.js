@@ -9,4 +9,22 @@ ReactDOM.render(<App />, document.getElementById('root'));
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const config = {
+    onUpdate:registration=>{
+        console.log('update found ', registration)
+        if(window.confirm('New update is found. Update ?')){
+            navigator.serviceWorker.getRegistrations()
+            .then(registrations=>{
+                for(let reg of registrations){
+                    reg.unregister()
+                }
+                // registration.skipWating()
+                window.location.reload();
+            })
+        }
+    },
+    onSuccess:registration=>{
+        console.log('success fully installed ', registration)
+    }
+}
+serviceWorker.register(config);
