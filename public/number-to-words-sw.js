@@ -1,11 +1,10 @@
 'use strict';
 
+import {assets} from './staticAssets.js';
 const CACHE_VERSION = 2.6;
-let CURRENT_CACHES = {
-  offline: 'offline-v' + CACHE_VERSION
-};
-const OFFLINE_URL = 'offline.html';
-
+let CURRENT_CACHE = 'offline-v' + CACHE_VERSION
+let OLD_CACHE = 'offline-v' + (CACHE_VERSION - 0.1 )
+const serviceWorkerFile = 'number-to-words.js'
 function createCacheBustedRequest(url) {
     console.log('creating cache busting url for ', url)
     let request = new Request(url, {cache: 'reload'});
@@ -26,15 +25,66 @@ function createCacheBustedRequest(url) {
     return new Request(bustedUrl);
 }
 
+function cacheAssets( assets, currentCache, previousCache ) {
+  return new Promise( function (resolve, reject) {
+    // open cache
+    caches.open(previousCache)
+    .then(oldCache=>{
+      caches.open(currentCache)
+      .then(newCache=>{
+        if(oldCache){
+          for(let req of assets){
+            console.log('caching ', req)
+            try{
+              oldCache.match(req)
+              .then(res=>{
+                console.log('res found in oldcache ', res)
+                if(res){
+                  newCache.put(req, res)
+                  oldCache.delete(req)
+                }
+                else{
+                  newCache.add(req)
+                }
+              })
+              .catch(_=>{
+                newCache.add(req)
+              })
+              console.log('cached')
+            }
+            catch(err){
+              console.error(err)
+            }
+          }
+          resolve()
+        }
+        else{
+          currentCache.addAll(assets)
+          .then(()=>{
+            console.log('all assets are cached')
+            resolve()
+          })
+          .catch(err=>{
+            console.error(err)
+            reject(err)
+          })
+        }
+      })
+    })
+  })
+}
+
 self.addEventListener('install', event => {
     event.waitUntil(
       // We can't use cache.add() here, since we want OFFLINE_URL to be the cache key, but
       // the actual URL we end up requesting might include a cache-busting parameter.
-      fetch(createCacheBustedRequest(OFFLINE_URL)).then(function(response) {
-        return caches.open(CURRENT_CACHES.offline).then(function(cache) {
-          return cache.put(OFFLINE_URL, response);
-        });
-      })
+      // fetch(createCacheBustedRequest(OFFLINE_URL)).then(function(response) {
+      //   return caches.open(CURRENT_CACHES.offline).then(function(cache) {
+      //     return cache.put(OFFLINE_URL, response);
+      //   });
+      // })
+      cacheAssets(assets, CURRENT_CACHE, OLD_CACHE)
+
     );
   });
   
@@ -42,23 +92,8 @@ self.addEventListener('install', event => {
     // Delete all caches that aren't named in CURRENT_CACHES.
     // While there is only one cache in this example, the same logic will handle the case where
     // there are multiple versioned caches.
-    let expectedCacheNames = Object.keys(CURRENT_CACHES).map(function(key) {
-      return CURRENT_CACHES[key];
-    });
-  
     event.waitUntil(
-      caches.keys().then(cacheNames => {
-        return Promise.all(
-          cacheNames.map(cacheName => {
-            if (expectedCacheNames.indexOf(cacheName) === -1) {
-              // If this cache name isn't present in the array of "expected" cache names,
-              // then delete it.
-              console.log('Deleting out of date cache:', cacheName);
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
+      caches.delete(OLD_CACHE)
     );
   });
 
@@ -87,29 +122,27 @@ self.addEventListener('message', messageEvent=>{
   if(messageEvent.data === 'skipWaiting') return skipWaiting();
 })
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', async event => {
     // We only want to call event.respondWith() if this is a navigation request
     // for an HTML page.
     // request.mode of 'navigate' is unfortunately not supported in Chrome
     // versions older than 49, so we need to include a less precise fallback,
     // which checks for a GET request with an Accept: text/html header.
-    if (event.request.mode === 'navigate' ||
-        (event.request.method === 'GET' &&
-         event.request.headers.get('accept').includes('text/html'))) {
-      console.log('Handling fetch event for', event.request.url);
-      event.respondWith(
-        fetch(event.request).catch(error => {
-          // The catch is only triggered if fetch() throws an exception, which will most likely
-          // happen due to the server being unreachable.
-          // If fetch() returns a valid HTTP response with an response code in the 4xx or 5xx
-          // range, the catch() will NOT be called. If you need custom handling for 4xx or 5xx
-          // errors, see https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker/fallback-response
-          console.log('Fetch failed; returning offline page instead.', error);
-          return caches.match(OFFLINE_URL);
-        })
-      );
-    }
-  
+    console.log('getting ', event.request.url)
+    // var cachedResponse = await caches.match(event.request).catch(function() {
+    //   return fetch(event.request);
+    // }).then(function(response) {
+    //   return response;
+    // }).catch(function() {
+    //   return 'hello'
+    // });
+
+    event.respondWith(
+      caches.match(event.request).then(function(response) {
+        console.log('response found', response)
+        return response || fetch(event.request);
+      })
+    );
     // If our if() condition is false, then this fetch handler won't intercept the request.
     // If there are any other fetch handlers registered, they will get a chance to call
     // event.respondWith(). If no fetch handlers call event.respondWith(), the request will be

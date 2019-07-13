@@ -27,4 +27,7 @@ const config = {
         console.log('success fully installed ', registration)
     }
 }
-serviceWorker.register(config);
+export function register(event){
+    console.log('starting to register')
+    serviceWorker.register(config);
+}

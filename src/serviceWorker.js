@@ -30,27 +30,29 @@ export function register(config) {
       // serve assets; see https://github.com/facebook/create-react-app/issues/2374
       return;
     }
+    console.log('checking for window.onload')
+    beginInstallation(config);
+  }
+}
 
-    window.addEventListener('load', () => {
-      const swUrl = `${process.env.PUBLIC_URL}/number-to-words-sw.js`;
+function beginInstallation(config){
+  const swUrl = `${process.env.PUBLIC_URL}/number-to-words-sw.js`;
 
-      if (isLocalhost) {
-        // This is running on localhost. Let's check if a service worker still exists or not.
-        checkValidServiceWorker(swUrl, config);
+  if (isLocalhost) {
+    // This is running on localhost. Let's check if a service worker still exists or not.
+    checkValidServiceWorker(swUrl, config);
 
-        // Add some additional logging to localhost, pointing developers to the
-        // service worker/PWA documentation.
-        navigator.serviceWorker.ready.then(() => {
-          console.log(
-            'This web app is being served cache-first by a service ' +
-              'worker. To learn more, visit https://bit.ly/CRA-PWA'
-          );
-        });
-      } else {
-        // Is not localhost. Just register service worker
-        registerValidSW(swUrl, config);
-      }
+    // Add some additional logging to localhost, pointing developers to the
+    // service worker/PWA documentation.
+    navigator.serviceWorker.ready.then(() => {
+      console.log(
+        'This web app is being served cache-first by a service ' +
+          'worker. To learn more, visit https://bit.ly/CRA-PWA'
+      );
     });
+  } else {
+    // Is not localhost. Just register service worker
+    registerValidSW(swUrl, config);
   }
 }
 

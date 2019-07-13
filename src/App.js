@@ -1,4 +1,5 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
+import { register } from './index.js'
 import './App.scss';
 const Indian = {
   0:'',
@@ -73,6 +74,8 @@ function getDecimalValue(number){
             return  'eighteen'
           case 9:
             return  'nineteen'
+          default:
+            return ''
         }
       }
       else{
@@ -108,6 +111,8 @@ function getTens(digit){
       case 9:
         name= 'ninety'
         break
+      default:
+        name=''
   }
   return name
 }
@@ -142,17 +147,24 @@ function getDigitName(digit){
       case 9:
         name= 'nine'
         break
+      default:
+        name=''
   }
   return name
 }
 
 function App() {
   const [number, setNumber] = useState("");
+  const [buttonText, setButtonText] = useState('use offline')
   const copyToClipboard = event => {
       var copyText = document.getElementById("result");
       copyText.select();
       document.execCommand("copy");
   }
+  useEffect(()=>{
+    if(number.toString().length === 0) setButtonText('go offline')
+    if(number.toString().length === 1) setButtonText('copy to clipboard')
+  },[number])
   return (
     <div className="App">
       <div className="header">
@@ -165,7 +177,7 @@ function App() {
           </div>
           <textarea readOnly className="text-container" id="result"
             value={numberToText(number)}/>
-          <div className='copy' onClick={copyToClipboard}>COPY TO CLIPBOARD</div>
+          <div className='copy' onClick={number.toString().length === 0 ? register : copyToClipboard}>{buttonText}</div>
         </div>
       </div>
     </div>

@@ -51,6 +51,8 @@
         height: 40px;
         font-size:28px;
         text-align: center;
+        border-color: transparent;
+        border-radius:4px;
         &:focus{
           outline:unset;
           outline-offset:unset;
@@ -80,6 +82,9 @@
        color:white;
        font-size: 20px;
        font-weight: 700;
+       border-radius: 4px;
+       text-transform: uppercase;
+       cursor: pointer;
      }
    }
  }
