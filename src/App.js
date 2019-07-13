@@ -148,17 +148,24 @@ function getDigitName(digit){
 
 function App() {
   const [number, setNumber] = useState("");
+  const copyToClipboard = event => {
+      var copyText = document.getElementById("result");
+      copyText.select();
+      document.execCommand("copy");
+  }
   return (
     <div className="App">
       <div className="header">
 
       </div>
-      <div className="body">
-        <div className="number-input">
-          <input type="number" value={number} placeholder="Enter number" onChange={e=>setNumber(e.target.value)}/>
-        </div>
-        <div className="text-container">
-          {numberToText(number)}
+      <div className="body n2w-container">
+        <div className="n2w">
+          <div className="number-input">
+            <input type="number" value={number} placeholder="Enter number" onChange={e=>setNumber(e.target.value)}/>
+          </div>
+          <textarea readOnly className="text-container" id="result"
+            value={numberToText(number)}/>
+          <div className='copy' onClick={copyToClipboard}>COPY TO CLIPBOARD</div>
         </div>
       </div>
     </div>
