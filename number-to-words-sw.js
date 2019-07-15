@@ -1,9 +1,9 @@
 'use strict';
-const assets=["/","precache-manifest.4cc51cc6cffd1e0d80769c8c1accf622.js","favicon.ico","index.html","number-to-words-sw.js","asset-manifest.json","static/css/main.04512daf.chunk.css.map","static/css/main.04512daf.chunk.css","static/js/main.64cff601.chunk.js","static/js/runtime~main.569b94da.js","static/js/main.64cff601.chunk.js.map","static/js/2.c2695c00.chunk.js","static/js/2.c2695c00.chunk.js.map","static/js/runtime~main.569b94da.js.map","manifest.json","service-worker.js",];
+const assets=["","precache-manifest.4cc51cc6cffd1e0d80769c8c1accf622.js","favicon.ico","index.html","number-to-words-sw.js","asset-manifest.json","static/css/main.04512daf.chunk.css.map","static/css/main.04512daf.chunk.css","static/js/main.64cff601.chunk.js","static/js/runtime~main.569b94da.js","static/js/main.64cff601.chunk.js.map","static/js/2.c2695c00.chunk.js","static/js/2.c2695c00.chunk.js.map","static/js/runtime~main.569b94da.js.map","manifest.json","service-worker.js",];
 const CACHE_VERSION = 2.6;
 let CURRENT_CACHE = 'offline-v' + CACHE_VERSION
 let OLD_CACHE = 'offline-v' + (CACHE_VERSION - 0.1 )
-const serviceWorkerFile = 'number-to-words.js'
+const serviceWorkerFile = 'number-to-words-sw.js'
 function createCacheBustedRequest(url) {
     console.log('creating cache busting url for ', url)
     let request = new Request(url, {cache: 'reload'});
@@ -33,11 +33,10 @@ function cacheAssets( assets, currentCache, previousCache ) {
       .then(newCache=>{
         if(oldCache){
           for(let req of assets){
-            console.log('caching ', req)
+            req = 'number-to-words/'+req
             try{
               oldCache.match(req)
               .then(res=>{
-                console.log('res found in oldcache ', res)
                 if(res){
                   newCache.put(req, res)
                   oldCache.delete(req)
@@ -49,7 +48,6 @@ function cacheAssets( assets, currentCache, previousCache ) {
               .catch(_=>{
                 newCache.add(req)
               })
-              console.log('cached')
             }
             catch(err){
               console.error(err)
@@ -58,9 +56,8 @@ function cacheAssets( assets, currentCache, previousCache ) {
           resolve()
         }
         else{
-          currentCache.addAll(assets)
+          currentCache.addAll(assets.filter(asset=>asset!==serviceWorkerFile).map(asset=>'number-to-words/'+asset))
           .then(()=>{
-            console.log('all assets are cached')
             resolve()
           })
           .catch(err=>{
@@ -127,7 +124,6 @@ self.addEventListener('fetch', async event => {
     // request.mode of 'navigate' is unfortunately not supported in Chrome
     // versions older than 49, so we need to include a less precise fallback,
     // which checks for a GET request with an Accept: text/html header.
-    console.log('getting ', event.request.url)
     // var cachedResponse = await caches.match(event.request).catch(function() {
     //   return fetch(event.request);
     // }).then(function(response) {
@@ -138,7 +134,6 @@ self.addEventListener('fetch', async event => {
 
     event.respondWith(
       caches.match(event.request).then(function(response) {
-        console.log('response found', response)
         return response || fetch(event.request);
       })
     );
