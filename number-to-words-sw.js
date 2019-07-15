@@ -60,7 +60,7 @@ function cacheAssets( assets, currentCache, previousCache ) {
           resolve()
         }
         else{
-          currentCache.addAll(assets.filter(asset=>asset!==serviceWorkerFile).map(asset=>'number-to-words/'+asset))
+          currentCache.addAll(assets)
           .then(()=>{
             resolve()
             console.log('add all succes')
