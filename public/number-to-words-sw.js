@@ -1,6 +1,6 @@
 'use strict';
 
-import {assets} from './staticAssets.js';
+const assets = []
 const CACHE_VERSION = 2.6;
 let CURRENT_CACHE = 'offline-v' + CACHE_VERSION
 let OLD_CACHE = 'offline-v' + (CACHE_VERSION - 0.1 )
