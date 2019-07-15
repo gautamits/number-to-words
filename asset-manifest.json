@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/number-to-words/static/css/main.e2f8d101.chunk.css",
-    "main.js": "/number-to-words/static/js/main.823fd3a1.chunk.js",
-    "main.js.map": "/number-to-words/static/js/main.823fd3a1.chunk.js.map",
+    "main.css": "/number-to-words/static/css/main.04512daf.chunk.css",
+    "main.js": "/number-to-words/static/js/main.64cff601.chunk.js",
+    "main.js.map": "/number-to-words/static/js/main.64cff601.chunk.js.map",
     "runtime~main.js": "/number-to-words/static/js/runtime~main.569b94da.js",
     "runtime~main.js.map": "/number-to-words/static/js/runtime~main.569b94da.js.map",
     "static/js/2.c2695c00.chunk.js": "/number-to-words/static/js/2.c2695c00.chunk.js",
     "static/js/2.c2695c00.chunk.js.map": "/number-to-words/static/js/2.c2695c00.chunk.js.map",
     "index.html": "/number-to-words/index.html",
-    "precache-manifest.9ad9f74c32cf6d5f9fe2b7b40e921e49.js": "/number-to-words/precache-manifest.9ad9f74c32cf6d5f9fe2b7b40e921e49.js",
+    "precache-manifest.4cc51cc6cffd1e0d80769c8c1accf622.js": "/number-to-words/precache-manifest.4cc51cc6cffd1e0d80769c8c1accf622.js",
     "service-worker.js": "/number-to-words/service-worker.js",
-    "static/css/main.e2f8d101.chunk.css.map": "/number-to-words/static/css/main.e2f8d101.chunk.css.map"
+    "static/css/main.04512daf.chunk.css.map": "/number-to-words/static/css/main.04512daf.chunk.css.map"
   }
 }
