@@ -1,9 +1,11 @@
 'use strict';
-const assets=["","precache-manifest.4cc51cc6cffd1e0d80769c8c1accf622.js","favicon.ico","index.html","number-to-words-sw.js","asset-manifest.json","static/css/main.04512daf.chunk.css.map","static/css/main.04512daf.chunk.css","static/js/main.64cff601.chunk.js","static/js/runtime~main.569b94da.js","static/js/main.64cff601.chunk.js.map","static/js/2.c2695c00.chunk.js","static/js/2.c2695c00.chunk.js.map","static/js/runtime~main.569b94da.js.map","manifest.json","service-worker.js",];
+let assets=["","precache-manifest.4cc51cc6cffd1e0d80769c8c1accf622.js","favicon.ico","index.html","number-to-words-sw.js","asset-manifest.json","static/css/main.04512daf.chunk.css.map","static/css/main.04512daf.chunk.css","static/js/main.64cff601.chunk.js","static/js/runtime~main.569b94da.js","static/js/main.64cff601.chunk.js.map","static/js/2.c2695c00.chunk.js","static/js/2.c2695c00.chunk.js.map","static/js/runtime~main.569b94da.js.map","manifest.json","service-worker.js",];
 const CACHE_VERSION = 2.6;
 let CURRENT_CACHE = 'offline-v' + CACHE_VERSION
 let OLD_CACHE = 'offline-v' + (CACHE_VERSION - 0.1 )
 const serviceWorkerFile = 'number-to-words-sw.js'
+assets = assets.filter(asset=>(asset && asset!==serviceWorkerFile)).map(asset=>'number-to-words/'+asset)
+
 function createCacheBustedRequest(url) {
     console.log('creating cache busting url for ', url)
     let request = new Request(url, {cache: 'reload'});
@@ -27,13 +29,14 @@ function createCacheBustedRequest(url) {
 function cacheAssets( assets, currentCache, previousCache ) {
   return new Promise( function (resolve, reject) {
     // open cache
+    console.log(assets)
     caches.open(previousCache)
     .then(oldCache=>{
       caches.open(currentCache)
       .then(newCache=>{
         if(oldCache){
           for(let req of assets){
-            req = 'number-to-words/'+req
+            console.log('caching ', req)
             try{
               oldCache.match(req)
               .then(res=>{
@@ -52,6 +55,7 @@ function cacheAssets( assets, currentCache, previousCache ) {
             catch(err){
               console.error(err)
             }
+            console.log(req ,' cached')
           }
           resolve()
         }
@@ -59,9 +63,10 @@ function cacheAssets( assets, currentCache, previousCache ) {
           currentCache.addAll(assets.filter(asset=>asset!==serviceWorkerFile).map(asset=>'number-to-words/'+asset))
           .then(()=>{
             resolve()
+            console.log('add all succes')
           })
           .catch(err=>{
-            console.error(err)
+            console.error(err, assets)
             reject(err)
           })
         }
