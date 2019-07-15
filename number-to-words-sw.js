@@ -5,7 +5,7 @@ let CURRENT_CACHE = 'offline-v' + CACHE_VERSION
 let OLD_CACHE = 'offline-v' + (CACHE_VERSION - 0.1 )
 const serviceWorkerFile = 'number-to-words-sw.js'
 assets = assets.map(asset=>{
-  if(!asset) return "/"
+  if(!asset) return "/number-to-words"
   return asset
 })
 
