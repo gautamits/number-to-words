@@ -142,6 +142,7 @@ self.addEventListener('fetch', async event => {
 
     event.respondWith(
       caches.match(event.request).then(function(response) {
+        console.log('cache response ', response,' for ', event.request.url)
         return response || fetch(event.request);
       })
     );
