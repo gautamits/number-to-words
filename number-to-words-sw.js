@@ -1,11 +1,11 @@
 'use strict';
-let assets=["","precache-manifest.4cc51cc6cffd1e0d80769c8c1accf622.js","favicon.ico","index.html","number-to-words-sw.js","asset-manifest.json","static/css/main.04512daf.chunk.css.map","static/css/main.04512daf.chunk.css","static/js/main.64cff601.chunk.js","static/js/runtime~main.569b94da.js","static/js/main.64cff601.chunk.js.map","static/js/2.c2695c00.chunk.js","static/js/2.c2695c00.chunk.js.map","static/js/runtime~main.569b94da.js.map","manifest.json","service-worker.js",];
+let assets=["","favicon.ico","precache-manifest.382bc21578e85871e614a6ddbec5029a.js","asset-manifest.json","number-to-words-sw.js","manifest.json","static/js/runtime~main.569b94da.js.map","static/js/main.3ac91fde.chunk.js","static/js/2.c2695c00.chunk.js","static/js/main.3ac91fde.chunk.js.map","static/js/2.c2695c00.chunk.js.map","static/js/runtime~main.569b94da.js","static/css/main.e2f8d101.chunk.css.map","static/css/main.e2f8d101.chunk.css","service-worker.js","index.html",];
 const CACHE_VERSION = 2.6;
 let CURRENT_CACHE = 'offline-v' + CACHE_VERSION
 let OLD_CACHE = 'offline-v' + (CACHE_VERSION - 0.1 )
 const serviceWorkerFile = 'number-to-words-sw.js'
-assets = assets.filter(asset=>(asset && asset!==serviceWorkerFile)).map(asset=>{
-  if(asset === '/') return "number-to-words/"
+assets = assets.map(asset=>{
+  if(!asset) return "/"
   return asset
 })
 
