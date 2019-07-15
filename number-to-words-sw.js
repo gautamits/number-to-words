@@ -5,9 +5,11 @@ let CURRENT_CACHE = 'offline-v' + CACHE_VERSION
 let OLD_CACHE = 'offline-v' + (CACHE_VERSION - 0.1 )
 const serviceWorkerFile = 'number-to-words-sw.js'
 assets = assets.map(asset=>{
-  if(!asset) return "/number-to-words"
+  if(!asset) return "/number-to-words/"
   return asset
 })
+assets.push("/")
+
 
 function createCacheBustedRequest(url) {
     console.log('creating cache busting url for ', url)
