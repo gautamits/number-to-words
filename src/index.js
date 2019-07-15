@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './n2w-sw.js';
+import * as serviceWorker from './registerServiceWorker.js';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

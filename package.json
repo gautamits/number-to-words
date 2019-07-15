@@ -9,10 +9,11 @@
     "react-scripts": "3.0.1"
   },
   "scripts": {
-    "predeploy": "npm run build",
+    "predeploy": "npm run build && ./static-assets.sh",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "postbuild":"./static-assets.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

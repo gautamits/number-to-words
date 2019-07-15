@@ -1,10 +1,14 @@
 'use strict';
-
-const assets = []
+let assets=[]
 const CACHE_VERSION = 2.6;
 let CURRENT_CACHE = 'offline-v' + CACHE_VERSION
 let OLD_CACHE = 'offline-v' + (CACHE_VERSION - 0.1 )
-const serviceWorkerFile = 'number-to-words.js'
+const serviceWorkerFile = 'number-to-words-sw.js'
+assets = assets.filter(asset=>(asset && asset!==serviceWorkerFile)).map(asset=>{
+  if(asset === '/') return "number-to-words/"
+  return asset
+})
+
 function createCacheBustedRequest(url) {
     console.log('creating cache busting url for ', url)
     let request = new Request(url, {cache: 'reload'});
@@ -28,6 +32,7 @@ function createCacheBustedRequest(url) {
 function cacheAssets( assets, currentCache, previousCache ) {
   return new Promise( function (resolve, reject) {
     // open cache
+    console.log(assets)
     caches.open(previousCache)
     .then(oldCache=>{
       caches.open(currentCache)
@@ -38,7 +43,6 @@ function cacheAssets( assets, currentCache, previousCache ) {
             try{
               oldCache.match(req)
               .then(res=>{
-                console.log('res found in oldcache ', res)
                 if(res){
                   newCache.put(req, res)
                   oldCache.delete(req)
@@ -50,22 +54,22 @@ function cacheAssets( assets, currentCache, previousCache ) {
               .catch(_=>{
                 newCache.add(req)
               })
-              console.log('cached')
             }
             catch(err){
               console.error(err)
             }
+            console.log(req ,' cached')
           }
           resolve()
         }
         else{
           currentCache.addAll(assets)
           .then(()=>{
-            console.log('all assets are cached')
             resolve()
+            console.log('add all succes')
           })
           .catch(err=>{
-            console.error(err)
+            console.error(err, assets)
             reject(err)
           })
         }
@@ -128,7 +132,6 @@ self.addEventListener('fetch', async event => {
     // request.mode of 'navigate' is unfortunately not supported in Chrome
     // versions older than 49, so we need to include a less precise fallback,
     // which checks for a GET request with an Accept: text/html header.
-    console.log('getting ', event.request.url)
     // var cachedResponse = await caches.match(event.request).catch(function() {
     //   return fetch(event.request);
     // }).then(function(response) {
@@ -139,7 +142,6 @@ self.addEventListener('fetch', async event => {
 
     event.respondWith(
       caches.match(event.request).then(function(response) {
-        console.log('response found', response)
         return response || fetch(event.request);
       })
     );
