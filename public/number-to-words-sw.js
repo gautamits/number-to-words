@@ -124,9 +124,9 @@ self.addEventListener('notificationclick', function(event) {
   event.notification.close();
 });
 
-self.addEventListener('message', messageEvent=>{
-  if(messageEvent.data === 'skipWaiting') return skipWaiting();
-})
+// self.addEventListener('message', messageEvent=>{
+//    if(messageEvent.data === 'skipWaiting') self.skipWaiting();
+// })
 
 self.addEventListener('fetch', async event => {
     // We only want to call event.respondWith() if this is a navigation request

@@ -18,7 +18,7 @@ const config = {
                 for(let reg of registrations){
                     reg.unregister()
                 }
-                // registration.skipWating()
+                registration.skipWating()
                 window.location.reload();
             })
         }
