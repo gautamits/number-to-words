@@ -1,6 +1,8 @@
 import React,{useState, useEffect} from 'react';
 import { register } from './index.js'
-import './App.scss';
+import './App.css'
+import ServiceWorker from './ServiceWorker.js'
+
 const Indian = {
   0:'',
   1:'',
@@ -31,7 +33,9 @@ function numberToText(number){
     number = number.slice(7,)
   }
   
-  return chunks.reverse().map((num, idx)=>getAnswerTillCrore(num.split("").reverse().join(""), idx < chunks.length - 1)).join(" ")
+  let words = chunks.filter(chunk => !!chunk).reverse().map((num, idx)=>getAnswerTillCrore(num.split("").reverse().join(""), idx < chunks.length - 1)).join(" ")
+  if(words.length) words = words+' only'
+  return words
 }
 
 function getAnswerTillCrore(number, elevated=false){
@@ -165,8 +169,11 @@ function App() {
     if(number.toString().length === 0) setButtonText('go offline')
     if(number.toString().length === 1) setButtonText('copy to clipboard')
   },[number])
+
   return (
+    
     <div className="App">
+      <ServiceWorker />
       <div className="header">
 
       </div>
